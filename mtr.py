@@ -27,7 +27,7 @@ def is_ip(s):
 
 def resolve_ip(hostname, qtype="A"):
     dns_resp = sr1(IP(dst="8.8.8.8") / UDP() / DNS(rd=1, qd=DNSQR(qname=hostname, qtype=qtype)), verbose=0, timeout=2)
-    if dns_resp and dns_resp[DNS]:
+    if dns_resp and dns_resp.haslayer(DNS):
         for x in range(dns_resp[DNS].ancount):
             s = dns_resp[DNSRR][x].rdata
             return s
@@ -45,7 +45,7 @@ def resolve_host(ip_addr):
     dns_resp = sr1(IP(dst="8.8.8.8") / UDP() / DNS(rd=1, qd=DNSQR(qname=r.to_text()[:-1], qtype='PTR')), verbose=0,
                    timeout=2)
     resp = []
-    if dns_resp and dns_resp[DNS]:
+    if dns_resp and dns_resp.haslayer(DNS):
         for x in range(dns_resp[DNS].ancount):
             s = dns_resp[DNSRR][x].rdata
             resp.append(s.decode("utf-8")[:-1])
